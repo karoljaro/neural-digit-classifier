@@ -24,6 +24,7 @@ class Image:
 
         if img_max - img_min > 0:
             normalized = (image_float - img_min) / (img_max - img_min)
+            normalized = 1.0 - normalized
         else:
             normalized = np.zeros_like(image_float)
 
