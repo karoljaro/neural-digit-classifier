@@ -1,0 +1,17 @@
+[project]
+name = "neural-digit-classifier"
+version = "0.1.0"
+description = "A handwritten digit classifier built from scratch with Python and NumPy."
+requires-python = ">=3.14,<3.15"
+
+[tool.black]
+line-length = 88
+include = '^/src/.*\.pyi?$'
+
+[tool.mypy]
+python_version = "3.14"
+strict = true
+warn_unused_configs = true
+show_error_codes = true
+pretty = true
+files = ["src"]
