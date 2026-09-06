@@ -1,6 +1,11 @@
 from image import Image
 from pathlib import Path
 import numpy as np
+from numpy.typing import NDArray
+
+
+def relu(z: NDArray[np.float32]) -> NDArray[np.float32]:
+    return z.clip(min=0, max=None)
 
 
 def main() -> None:
@@ -22,7 +27,7 @@ def main() -> None:
     b = np.zeros((64, 1), dtype=np.float32)
 
     z = W @ x + b
-    print(z)
+    print(relu(z))
 
 
 if __name__ == "__main__":
