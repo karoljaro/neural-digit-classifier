@@ -1,11 +1,6 @@
 from image import Image
 from pathlib import Path
-import numpy as np
-from numpy.typing import NDArray
-
-
-def relu(z: NDArray[np.float32]) -> NDArray[np.float32]:
-    return z.clip(min=0, max=None)
+from neural_network import NeuralNetwork
 
 
 def main() -> None:
@@ -16,18 +11,10 @@ def main() -> None:
 
     x = loaded_image.reshape(-1, 1)
 
-    rng = np.random.default_rng(42)
+    neural_network = NeuralNetwork()
+    forwarded = neural_network.forward(x)
 
-    W = rng.normal(
-        loc=0.0,
-        scale=0.01,
-        size=(64, 784)
-    ).astype(np.float32)
-
-    b = np.zeros((64, 1), dtype=np.float32)
-
-    z = W @ x + b
-    print(relu(z))
+    print(forwarded)
 
 
 if __name__ == "__main__":
