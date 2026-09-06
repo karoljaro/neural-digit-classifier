@@ -2,6 +2,8 @@ from image import Image
 from pathlib import Path
 from neural_network import NeuralNetwork
 from activations import softmax
+from losses import cross_entropy
+import numpy as np
 
 
 def main() -> None:
@@ -17,7 +19,11 @@ def main() -> None:
 
     softmaxed = softmax(forwarded)
 
-    print(softmaxed)
+    one_hot = np.array([[0, 1, 0, 0, 0, 0, 0, 0, 0, 0]], dtype=np.float32)
+
+    loss = cross_entropy(softmaxed, one_hot)
+
+    print(loss)
 
 
 if __name__ == "__main__":
