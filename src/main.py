@@ -1,7 +1,7 @@
 from image import Image
 from pathlib import Path
 from neural_network import NeuralNetwork
-import numpy as np
+from activations import softmax
 
 
 def main() -> None:
@@ -15,13 +15,9 @@ def main() -> None:
     neural_network = NeuralNetwork()
     forwarded = neural_network.forward(x)
 
-    exp_values = np.exp(forwarded)
+    softmaxed = softmax(forwarded)
 
-    sum_of_exps = np.sum(exp_values)
-
-    softmax = exp_values / sum_of_exps
-
-    print(softmax)
+    print(softmaxed)
 
 
 if __name__ == "__main__":
