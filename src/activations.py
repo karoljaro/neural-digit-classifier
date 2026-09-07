@@ -6,6 +6,10 @@ def relu(z: NDArray[np.float32]) -> NDArray[np.float32]:
     return z.clip(min=0, max=None)
 
 
+def relu_derivative(z: NDArray[np.float32]) -> NDArray[np.float32]:
+    return (z > 0).astype(np.float32)
+
+
 def softmax(z: NDArray[np.float32]) -> NDArray[np.float32]:
     shifted = z - np.max(z)
     exp_values = np.exp(shifted)
