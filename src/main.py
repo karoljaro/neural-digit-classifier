@@ -15,20 +15,18 @@ def main() -> None:
     x = loaded_image.reshape(-1, 1)
 
     neural_network = NeuralNetwork()
-    forwarded = neural_network.forward(x)
-    softmaxed = softmax(forwarded)
     one_hot = np.array([[0, 1, 0, 0, 0, 0, 0, 0, 0, 0]], dtype=np.float32)
-    loss_before = cross_entropy(softmaxed, one_hot)
 
-    neural_network.backward(softmaxed, one_hot)
-    neural_network.update_parameters()
+    for epoch in range(100):
+        forwarded = neural_network.forward(x)
+        softmaxed = softmax(forwarded)
+        loss = cross_entropy(softmaxed, one_hot)
 
-    forwarded = neural_network.forward(x)
-    softmaxed = softmax(forwarded)
-    loss_after = cross_entropy(softmaxed, one_hot)
+        neural_network.backward(softmaxed, one_hot)
+        neural_network.update_parameters()
 
-    print("Before:", loss_before)
-    print("After:", loss_after)
+        if epoch % 10 == 0:
+            print(epoch, loss)
 
 
 if __name__ == "__main__":
