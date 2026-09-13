@@ -16,14 +16,19 @@ def main() -> None:
 
     neural_network = NeuralNetwork()
     forwarded = neural_network.forward(x)
-
     softmaxed = softmax(forwarded)
-
     one_hot = np.array([[0, 1, 0, 0, 0, 0, 0, 0, 0, 0]], dtype=np.float32)
+    loss_before = cross_entropy(softmaxed, one_hot)
 
-    loss = cross_entropy(softmaxed, one_hot)
+    neural_network.backward(softmaxed, one_hot)
+    neural_network.update_parameters()
 
-    print(loss)
+    forwarded = neural_network.forward(x)
+    softmaxed = softmax(forwarded)
+    loss_after = cross_entropy(softmaxed, one_hot)
+
+    print("Before:", loss_before)
+    print("After:", loss_after)
 
 
 if __name__ == "__main__":
