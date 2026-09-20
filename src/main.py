@@ -4,10 +4,16 @@ from neural_network import NeuralNetwork
 from activations import softmax
 from losses import cross_entropy
 import numpy as np
+from idx_loader import IdxReader
 
 
 def main() -> None:
     image = Image()
+    reader = IdxReader(
+        train_images_path=Path("data/mnist/train-images-idx3-ubyte.gz"),
+        train_labels_path=Path("data/mnist/train-labels-idx1-ubyte.gz"),
+    )
+    reader.load()
     current_dir = Path.cwd()
     file_path = current_dir / "sample" / "one.png"
     loaded_image = image.load(file_path)
