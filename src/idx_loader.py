@@ -40,4 +40,14 @@ class IdxReader:
             print(image)
 
         with gzip.open(self._train_labels_path, "rb") as b_file:
-            h
+            header = b_file.read(8)
+
+            magic = int.from_bytes(header[0:4], byteorder="big")
+            label_count = int.from_bytes(header[4:8], byteorder="big")
+
+            label_byte = b_file.read(1)
+            label = int.from_bytes(label_byte)
+
+            print(f"magic: {magic}")
+            print(f"label count: {label_count}")
+            print(f"first label: {label}")
