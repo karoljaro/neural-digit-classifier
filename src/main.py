@@ -19,39 +19,72 @@ def main() -> None:
 
     for epoch in range(3):
         total_loss = 0.0
-        correct = 0
+
+        # TRAINING
         for raw_image, raw_label in zip(images, labels, strict=True):
             image: NDArray[np.float32] = np.asarray(
                 raw_image,
                 dtype=np.float32,
             )
 
-            normalized_image = np.divide(
+            np.divide(
                 image,
                 np.float32(255.0),
+                out=image,
             )
 
             label = int(raw_label)
 
-            x = normalized_image.reshape(-1, 1)
+            x = image.reshape(-1, 1)
+
             one_hot = np.zeros((1, 10), dtype=np.float32)
             one_hot[0, label] = 1.0
 
             forwarded = neural_network.forward(x)
             softmaxed = softmax(forwarded)
-            predicted = int(np.argmax(softmaxed))
-            if predicted == label:
-                correct += 1
+
             loss = cross_entropy(softmaxed, one_hot)
             total_loss += float(loss)
 
             neural_network.backward(softmaxed, one_hot)
             neural_network.update_parameters()
 
-        accuracy = correct / len(images)
         average_loss = total_loss / len(images)
-        print(f"Epoch {epoch + 1}: loss={average_loss:.4f}")
-        print(f"Accuracy {accuracy}")
+
+        # EVALUATION
+        correct = 0
+
+        for raw_image, raw_label in zip(images, labels, strict=True):
+            image: NDArray[np.float32] = np.asarray(
+                raw_image,
+                dtype=np.float32,
+            )
+
+            np.divide(
+                image,
+                np.float32(255.0),
+                out=image,
+            )
+
+            label = int(raw_label)
+
+            x = image.reshape(-1, 1)
+
+            forwarded = neural_network.forward(x)
+            softmaxed = softmax(forwarded)
+
+            predicted = int(np.argmax(softmaxed))
+
+            if predicted == label:
+                correct += 1
+
+        accuracy = correct / len(images)
+
+        print(
+            f"Epoch {epoch + 1}: "
+            f"loss={average_loss:.4f}, "
+            f"accuracy={accuracy:.4%}"
+        )
 
 
 if __name__ == "__main__":
