@@ -25,15 +25,14 @@ def main() -> None:
                 dtype=np.float32,
             )
 
-            np.divide(
+            normalized_image = np.divide(
                 image,
                 np.float32(255.0),
-                out=image,
             )
 
             label = int(raw_label)
 
-            x = image.reshape(-1, 1)
+            x = normalized_image.reshape(-1, 1)
             one_hot = np.zeros((1, 10), dtype=np.float32)
             one_hot[0, label] = 1.0
 
