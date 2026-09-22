@@ -13,7 +13,13 @@ def main() -> None:
         train_labels_path=Path("data/mnist/train-labels-idx1-ubyte.gz"),
     )
 
+    test_reader = IdxReader(
+        train_images_path=Path("data/mnist/t10k-images-idx3-ubyte.gz"),
+        train_labels_path=Path("data/mnist/t10k-labels-idx1-ubyte.gz"),
+    )
+
     images, labels = reader.load()
+    test_images, test_labels = test_reader.load()
 
     neural_network = NeuralNetwork()
 
@@ -54,7 +60,7 @@ def main() -> None:
         # EVALUATION
         correct = 0
 
-        for raw_image, raw_label in zip(images, labels, strict=True):
+        for raw_image, raw_label in zip(test_images, test_labels, strict=True):
             image: NDArray[np.float32] = np.asarray(
                 raw_image,
                 dtype=np.float32,
@@ -78,12 +84,12 @@ def main() -> None:
             if predicted == label:
                 correct += 1
 
-        accuracy = correct / len(images)
+        accuracy = correct / len(test_images)
 
         print(
             f"Epoch {epoch + 1}: "
             f"loss={average_loss:.4f}, "
-            f"accuracy={accuracy:.4%}"
+            f"test_accuracy={accuracy:.4%}"
         )
 
 
