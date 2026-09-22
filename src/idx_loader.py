@@ -17,11 +17,11 @@ class IdxReader:
         self._train_images_path = train_images_path
         self._train_labels_path = train_labels_path
 
-    def load(self) -> tuple[NDArray[np.uint8], int]:
+    def load(self) -> tuple[NDArray[np.uint8], NDArray[np.uint8]]:
         self._validate_paths()
 
-        image, image_count = self._load_first_image()
-        label, label_count = self._load_first_label()
+        images, image_count = self._load_image()
+        labels, label_count = self._load_label()
 
         if image_count != label_count:
             raise ValueError(
@@ -29,9 +29,12 @@ class IdxReader:
                 f"label count ({label_count})"
             )
 
-        return image, label
+        if images.shape[0] != labels.shape[0]:
+            raise ValueError("Images and labels count mismatch")
 
-    def _load_first_image(self) -> tuple[NDArray[np.uint8], int]:
+        return images, labels
+
+    def _load_image(self) -> tuple[NDArray[np.uint8], int]:
         with gzip.open(self._train_images_path, "rb") as file:
             header = file.read(16)
 
@@ -43,18 +46,18 @@ class IdxReader:
             if magic != self.IMAGE_MAGIC:
                 raise ValueError(f"Invalid image magic number: {magic}")
 
-            image_bytes = file.read(rows * columns)
+            image_bytes = file.read(image_count * rows * columns)
 
             flat_image = np.frombuffer(
                 image_bytes,
                 dtype=np.uint8,
             )
 
-            image = flat_image.reshape(rows, columns)
+            image = flat_image.reshape(image_count, rows, columns)
 
             return image, image_count
 
-    def _load_first_label(self) -> tuple[int, int]:
+    def _load_label(self) -> tuple[NDArray[np.uint8], int]:
         with gzip.open(self._train_labels_path, "rb") as file:
             header = file.read(8)
 
@@ -64,10 +67,10 @@ class IdxReader:
             if magic != self.LABEL_MAGIC:
                 raise ValueError(f"Invalid label magic number: {magic}")
 
-            label_byte = file.read(1)
-            label = int.from_bytes(label_byte, byteorder="big")
+            label_byte = file.read(label_count)
+            labels = np.frombuffer(label_byte, dtype=np.uint8)
 
-            return label, label_count
+            return labels, label_count
 
     def _validate_paths(self) -> None:
         if not self._train_images_path.is_file():
