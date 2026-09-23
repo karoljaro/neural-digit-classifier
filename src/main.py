@@ -1,10 +1,8 @@
 from pathlib import Path
 from neural_network import NeuralNetwork
-from activations import softmax
-from losses import cross_entropy
-import numpy as np
 from idx_loader import IdxReader
-from numpy.typing import NDArray
+from training import train_epoch
+from evaluation import evaluate_accuracy
 
 
 def main() -> None:
@@ -24,71 +22,12 @@ def main() -> None:
     neural_network = NeuralNetwork()
 
     for epoch in range(3):
-        total_loss = 0.0
-
-        # TRAINING
-        for raw_image, raw_label in zip(images, labels, strict=True):
-            image: NDArray[np.float32] = np.asarray(
-                raw_image,
-                dtype=np.float32,
-            )
-
-            np.divide(
-                image,
-                np.float32(255.0),
-                out=image,
-            )
-
-            label = int(raw_label)
-
-            x = image.reshape(-1, 1)
-
-            one_hot = np.zeros((1, 10), dtype=np.float32)
-            one_hot[0, label] = 1.0
-
-            forwarded = neural_network.forward(x)
-            softmaxed = softmax(forwarded)
-
-            loss = cross_entropy(softmaxed, one_hot)
-            total_loss += float(loss)
-
-            neural_network.backward(softmaxed, one_hot)
-            neural_network.update_parameters()
-
-        average_loss = total_loss / len(images)
-
-        # EVALUATION
-        correct = 0
-
-        for raw_image, raw_label in zip(test_images, test_labels, strict=True):
-            image: NDArray[np.float32] = np.asarray(
-                raw_image,
-                dtype=np.float32,
-            )
-
-            np.divide(
-                image,
-                np.float32(255.0),
-                out=image,
-            )
-
-            label = int(raw_label)
-
-            x = image.reshape(-1, 1)
-
-            forwarded = neural_network.forward(x)
-            softmaxed = softmax(forwarded)
-
-            predicted = int(np.argmax(softmaxed))
-
-            if predicted == label:
-                correct += 1
-
-        accuracy = correct / len(test_images)
+        loss = train_epoch(neural_network, images, labels)
+        accuracy = evaluate_accuracy(neural_network, test_images, test_labels)
 
         print(
             f"Epoch {epoch + 1}: "
-            f"loss={average_loss:.4f}, "
+            f"loss={loss:.4f}, "
             f"test_accuracy={accuracy:.4%}"
         )
 
