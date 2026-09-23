@@ -11,11 +11,11 @@ class IdxReader:
 
     def __init__(
         self,
-        train_images_path: Path,
-        train_labels_path: Path,
+        images_path: Path,
+        labels_path: Path,
     ) -> None:
-        self._train_images_path = train_images_path
-        self._train_labels_path = train_labels_path
+        self._images_path = images_path
+        self._labels_path = labels_path
 
     def load(self) -> tuple[NDArray[np.uint8], NDArray[np.uint8]]:
         self._validate_paths()
@@ -35,7 +35,7 @@ class IdxReader:
         return images, labels
 
     def _load_image(self) -> tuple[NDArray[np.uint8], int]:
-        with gzip.open(self._train_images_path, "rb") as file:
+        with gzip.open(self._images_path, "rb") as file:
             header = file.read(16)
 
             magic = int.from_bytes(header[0:4], byteorder="big")
@@ -58,7 +58,7 @@ class IdxReader:
             return image, image_count
 
     def _load_label(self) -> tuple[NDArray[np.uint8], int]:
-        with gzip.open(self._train_labels_path, "rb") as file:
+        with gzip.open(self._labels_path, "rb") as file:
             header = file.read(8)
 
             magic = int.from_bytes(header[0:4], byteorder="big")
@@ -73,8 +73,8 @@ class IdxReader:
             return labels, label_count
 
     def _validate_paths(self) -> None:
-        if not self._train_images_path.is_file():
-            raise FileNotFoundError(f"Image file not found: {self._train_images_path}")
+        if not self._images_path.is_file():
+            raise FileNotFoundError(f"Image file not found: {self._images_path}")
 
-        if not self._train_labels_path.is_file():
-            raise FileNotFoundError(f"Label file not found: {self._train_labels_path}")
+        if not self._labels_path.is_file():
+            raise FileNotFoundError(f"Label file not found: {self._labels_path}")

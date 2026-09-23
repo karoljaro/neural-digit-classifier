@@ -9,13 +9,13 @@ from numpy.typing import NDArray
 
 def main() -> None:
     reader = IdxReader(
-        train_images_path=Path("data/mnist/train-images-idx3-ubyte.gz"),
-        train_labels_path=Path("data/mnist/train-labels-idx1-ubyte.gz"),
+        images_path=Path("data/mnist/train-images-idx3-ubyte.gz"),
+        labels_path=Path("data/mnist/train-labels-idx1-ubyte.gz"),
     )
 
     test_reader = IdxReader(
-        train_images_path=Path("data/mnist/t10k-images-idx3-ubyte.gz"),
-        train_labels_path=Path("data/mnist/t10k-labels-idx1-ubyte.gz"),
+        images_path=Path("data/mnist/t10k-images-idx3-ubyte.gz"),
+        labels_path=Path("data/mnist/t10k-labels-idx1-ubyte.gz"),
     )
 
     images, labels = reader.load()
