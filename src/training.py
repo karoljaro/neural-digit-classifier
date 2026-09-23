@@ -13,7 +13,13 @@ def train_epoch(
 ) -> float:
     total_loss = 0.0
 
-    for raw_image, raw_label in zip(train_images, train_labels, strict=True):
+    rng = np.random.default_rng()
+    indices = rng.permutation(len(train_images))
+
+    for index in indices:
+        raw_image = train_images[index]
+        raw_label = train_labels[index]
+
         prepared_image = prepare_image(raw_image)
         label = int(raw_label)
 
