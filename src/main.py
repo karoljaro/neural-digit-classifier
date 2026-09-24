@@ -3,9 +3,11 @@ from neural_network import NeuralNetwork
 from idx_loader import IdxReader
 from training import train_epoch
 from evaluation import evaluate_accuracy
+import numpy as np
 
 
 def main() -> None:
+    rng = np.random.default_rng(42)
     reader = IdxReader(
         images_path=Path("data/mnist/train-images-idx3-ubyte.gz"),
         labels_path=Path("data/mnist/train-labels-idx1-ubyte.gz"),
@@ -22,7 +24,7 @@ def main() -> None:
     neural_network = NeuralNetwork()
 
     for epoch in range(3):
-        loss = train_epoch(neural_network, images, labels)
+        loss = train_epoch(neural_network, images, labels, rng)
         accuracy = evaluate_accuracy(neural_network, test_images, test_labels)
 
         print(

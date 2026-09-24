@@ -10,10 +10,9 @@ def train_epoch(
     network: NeuralNetwork,
     train_images: NDArray[np.uint8],
     train_labels: NDArray[np.uint8],
+    rng: np.random.Generator
 ) -> float:
     total_loss = 0.0
-
-    rng = np.random.default_rng()
     indices = rng.permutation(len(train_images))
 
     for index in indices:
