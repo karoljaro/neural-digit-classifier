@@ -3,7 +3,7 @@ import numpy as np
 from preprocessing import prepare_image, one_hot_encode
 from neural_network import NeuralNetwork
 from activations import softmax
-from losses import cross_entropy, cross_entropy_from_logits
+from losses import cross_entropy_from_logits
 
 
 def train_epoch(
