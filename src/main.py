@@ -4,6 +4,7 @@ from idx_loader import IdxReader
 from training import train_epoch
 from evaluation import evaluate_accuracy
 import numpy as np
+from dataset import train_validation_split
 
 
 def main() -> None:
@@ -23,15 +24,33 @@ def main() -> None:
 
     neural_network = NeuralNetwork()
 
+    (
+        train_images,
+        train_labels,
+        validation_images,
+        validation_labels,
+    ) = train_validation_split(
+        images,
+        labels,
+        validation_size=10_000,
+        rng=rng,
+    )
+
     for epoch in range(3):
-        loss = train_epoch(neural_network, images, labels, rng)
-        accuracy = evaluate_accuracy(neural_network, test_images, test_labels)
+        loss = train_epoch(neural_network, train_images, train_labels, rng)
+        validation_accuracy = evaluate_accuracy(
+            neural_network, validation_images, validation_labels
+        )
 
         print(
             f"Epoch {epoch + 1}: "
-            f"loss={loss:.4f}, "
-            f"test_accuracy={accuracy:.4%}"
+            f"train_loss={loss:.4f}, "
+            f"validation_accuracy={validation_accuracy:.4%}"
         )
+
+    test_accuracy = evaluate_accuracy(neural_network, test_images, test_labels)
+
+    print(f"Final test_accuracy={test_accuracy:.4%}")
 
 
 if __name__ == "__main__":
