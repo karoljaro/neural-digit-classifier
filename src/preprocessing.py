@@ -2,7 +2,7 @@ from numpy.typing import NDArray
 import numpy as np
 
 
-def prepare_image(raw_image: np.uint8) -> NDArray[np.float32]:
+def prepare_image(raw_image: NDArray[np.uint8]) -> NDArray[np.float32]:
     image: NDArray[np.float32] = np.asarray(
         raw_image,
         dtype=np.float32,
