@@ -3,7 +3,7 @@ import numpy as np
 from preprocessing import prepare_image, one_hot_encode
 from neural_network import NeuralNetwork
 from activations import softmax
-from losses import cross_entropy
+from losses import cross_entropy, cross_entropy_from_logits
 
 
 def train_epoch(
@@ -26,7 +26,7 @@ def train_epoch(
 
         forwarded = network.forward(prepared_image)
         softmaxed = softmax(forwarded)
-        loss = cross_entropy(softmaxed, one_hot)
+        loss = cross_entropy_from_logits(forwarded, one_hot)
         total_loss += float(loss)
 
         network.backward(softmaxed, one_hot)
