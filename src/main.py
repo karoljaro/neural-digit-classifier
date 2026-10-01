@@ -2,7 +2,7 @@ from pathlib import Path
 from neural_network import NeuralNetwork
 from idx_loader import IdxReader
 from training import train_epoch
-from evaluation import evaluate_accuracy
+from evaluation import evaluate
 import numpy as np
 from dataset import train_validation_split
 
@@ -22,7 +22,7 @@ def main() -> None:
 
     images, labels = reader.load()
     test_images, test_labels = test_reader.load()
-    hidden_size = 32
+    hidden_size = 64
     print(f"Hidden Size: {hidden_size}")
     neural_network = NeuralNetwork(hidden_size)
 
@@ -39,14 +39,17 @@ def main() -> None:
     )
 
     for epoch in range(10):
-        loss = train_epoch(neural_network, train_images, train_labels, shuffle_rng)
-        validation_accuracy = evaluate_accuracy(
+        train_loss = train_epoch(
+            neural_network, train_images, train_labels, shuffle_rng
+        )
+        validation_loss, validation_accuracy = evaluate(
             neural_network, validation_images, validation_labels
         )
 
         print(
             f"Epoch {epoch + 1}: "
-            f"train_loss={loss:.4f}, "
+            f"train_loss={train_loss:.4f}, "
+            f"validation_loss={validation_loss:.4f}, "
             f"validation_accuracy={validation_accuracy:.4%}"
         )
 
