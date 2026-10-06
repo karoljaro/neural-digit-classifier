@@ -5,6 +5,7 @@ from training import train_epoch
 from evaluation import evaluate
 import numpy as np
 from dataset import train_validation_split
+from early_stopping import EarlyStopping
 
 
 def main() -> None:
@@ -22,9 +23,10 @@ def main() -> None:
 
     images, labels = reader.load()
     test_images, test_labels = test_reader.load()
-    hidden_size = 64
+    hidden_size = 8
     print(f"Hidden Size: {hidden_size}")
     neural_network = NeuralNetwork(hidden_size)
+    early_stopping = EarlyStopping()
 
     (
         train_images,
@@ -38,7 +40,7 @@ def main() -> None:
         rng=split_rng,
     )
 
-    for epoch in range(10):
+    for epoch in range(100):
         train_loss = train_epoch(
             neural_network, train_images, train_labels, shuffle_rng
         )
@@ -46,12 +48,17 @@ def main() -> None:
             neural_network, validation_images, validation_labels
         )
 
+        should_stop = early_stopping.should_stop(validation_loss)
+
         print(
             f"Epoch {epoch + 1}: "
             f"train_loss={train_loss:.4f}, "
             f"validation_loss={validation_loss:.4f}, "
             f"validation_accuracy={validation_accuracy:.4%}"
         )
+
+        if should_stop:
+            break
 
     # test_accuracy = evaluate_accuracy(neural_network, test_images, test_labels)
 
