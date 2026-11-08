@@ -2,7 +2,7 @@
 name = "neural-digit-classifier"
 version = "0.1.0"
 description = "A handwritten digit classifier built from scratch with Python and NumPy."
-requires-python = ">=3.14,<3.15"
+requires-python = ">=3.14"
 
 [tool.black]
 line-length = 88
